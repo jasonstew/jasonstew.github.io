@@ -23,6 +23,21 @@
   padding: 12px 0;
   -webkit-user-select: none;
 }
+#dropdown {
+  position: absolute;
+  bottom: 40%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  margin: 0 auto;
+  color: #fff;
+  font-size: 38px;
+  width: 128px;
+  overflow-x: visible;
+  cursor: default;
+  padding: 12px 0;
+  -webkit-user-select: none;
+}
 
 #waves {
   width: 100%;

@@ -6,6 +6,7 @@
       this.device = null;
       this.server = null;
       this._characteristics = new Map();
+      this.options =[];
     }
     connect() {
       return navigator.bluetooth.requestDevice({filters:[{services:[ '4677062c-ad02-4034-9abf-98581772427c' ]}]})
@@ -17,10 +18,17 @@
         this.server = server;
         return Promise.all([
           server.getPrimaryService('4677062c-ad02-4034-9abf-98581772427c').then(service => {
-            return Promise.all([
-              this._cacheCharacteristic(service, 'dc13b36a-3499-46b0-ac11-5ac0173c4cc5'),
-              this._cacheCharacteristic(service, 'b4250402-fb4b-4746-b2b0-93f0e61122c6'),
-            ])
+      //      return Promise.all([
+      //        this._cacheCharacteristic(service, 'dc13b36a-3499-46b0-ac11-5ac0173c4cc5'),
+      //        this._cacheCharacteristic(service, 'b4250402-fb4b-4746-b2b0-93f0e61122c6'),
+      //      ])
+            return service.getCharacteristics()
+            .then(characteristics => {
+
+
+            this.options=  characteristics;
+            })
+          //  .then( () =>statusText.textContent = 'Select Sensor');
           })
         ]);
       })
@@ -44,11 +52,13 @@
     //     }
     //  });
     // }
-    startNotificationsHeartRateMeasurement() {
-      return this._startNotifications('b4250402-fb4b-4746-b2b0-93f0e61122c6');
+    startNotificationsHeartRateMeasurement(index) {
+    //  return this._startNotifications(heartRateSensor.options[index].uuid);
+        return this.options[index-1].startNotifications();
     }
-    stopNotificationsHeartRateMeasurement() {
-      return this._stopNotifications('b4250402-fb4b-4746-b2b0-93f0e61122c6');
+    stopNotificationsHeartRateMeasurement(index) {
+    //  return this._stopNotifications(heartRateSensor.options[index].uuid);
+        return this.options[index-1].stopNotifications();
     }
     parseHeartRate(value) {
       // In Chrome 50+, a DataView is returned instead of an ArrayBuffer.

@@ -10,7 +10,12 @@
   </head>
   <body>
     <div id="container">
-      <div id="statusText">Connect</div>
+      <div id="dropdown">
+        <select name="sensors" id="sensorselect">
+          <option value="">Select the sensor</option>
+       </select>
+     </div>
+      <div id="statusText">Connect </div>
       <canvas id="waves"></canvas>
     </div>
     <script src="heartRateSensor.js"></script>

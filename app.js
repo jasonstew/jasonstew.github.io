@@ -1,27 +1,59 @@
 var canvas = document.querySelector('canvas');
 var statusText = document.querySelector('#statusText');
+var sensorselect = document.getElementById("sensorselect");
 
 statusText.addEventListener('click', function() {
-  statusText.textContent = 'Breathe...';
+  statusText.textContent = 'connecting...';
   heartRates = [];
+  options =[];
   heartRateSensor.connect()
-  .then(() => heartRateSensor.startNotificationsHeartRateMeasurement().then(handleHeartRateMeasurement))
-  .catch(error => {
-    statusText.textContent = error;
-  });
-});
+  .then(() => addList());
+  //.then(() => heartRateSensor.startNotificationsHeartRateMeasurement().then(handleHeartRateMeasurement))
+//  .catch(error => {
+  //  statusText.textContent = error;
+  //});
+//  dropdown.style.visibility = "visibile";
 
+
+
+});
+sensorselect.addEventListener('change', function() {
+heartRates = [];
+  options =[];
+var j;
+ for ( j=1; j< heartRateSensor.options.length; j++)
+ {
+   heartRateSensor.stopNotificationsHeartRateMeasurement(j);
+    }
+    
+ heartRateSensor.startNotificationsHeartRateMeasurement(sensorselect.selectedIndex).then(handleHeartRateMeasurement);
+//  .catch(error => {
+  //  statusText.textContent = error;
+  //});
+
+});
+function addList(){
+  var i;
+  sensorselect.style.visibility = "visibile";
+  for( i=0; i< heartRateSensor.options.length; i++)
+ {
+   var option = document.createElement("option");
+   option.text=heartRateSensor.options[i].uuid;
+   sensorselect.add(option,sensorselect[i+1]);
+ }
+ statusText.textContent = 'Select Sensor...';
+}
 function handleHeartRateMeasurement(heartRateMeasurement) {
   heartRateMeasurement.addEventListener('characteristicvaluechanged', event => {
     var heartRateMeasurement = heartRateSensor.parseHeartRate(event.target.value);
-    statusText.innerHTML = heartRateMeasurement+' % humidity';
+    statusText.innerHTML = heartRateMeasurement;
     heartRates.push(heartRateMeasurement);
     drawWaves();
   });
 }
 
 var heartRates = [];
-var mode = 'bar';
+var mode = 'line';
 
 canvas.addEventListener('click', event => {
   mode = mode === 'bar' ? 'line' : 'bar';
