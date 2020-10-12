@@ -2,6 +2,9 @@ var canvas = document.querySelector('canvas');
 var statusText = document.querySelector('#statusText');
 var myTab = document.getElementById("myTab");
 var dataContainer = document.getElementById("dataContainer");
+var internetConnected = document.getElementById("internetConnected");
+var badges= document.getElementById("badges");
+
 var variableNames = ["Pressure 1", "Pressure 2", "Pressure 3", "Pressure 4", "Pressure 5", "PID 1", "PID 2", "PID 3", "Flow 1", "Flow 2", "Temperature", "Humidity"]
 statusText.addEventListener('click', function() {
   statusText.textContent = 'connecting...';
@@ -24,7 +27,13 @@ statusText.addEventListener('click', function() {
 });
 
 async function initializePlots(heartRateMeasurement) {
-
+  if (heartRateMeasurement.particleConfig[0]) {
+$('#internetConnected').removeClass('badge-dark');
+  $('#internetConnected').toggleClass('badge-success');
+  } else {
+    $('#internetConnected').removeClass('badge-dark');
+  $('#internetConnected').toggleClass('badge-danger');
+  }
   var time = new Date();
   var i;
   for (i = 0; i < heartRateMeasurement.SensorVal.length; i++) {
@@ -62,7 +71,7 @@ async function initializePlots(heartRateMeasurement) {
           },
           value: 450,
           title: {
-            text:  variableNames[i]
+            text: variableNames[i]
           },
           type: "indicator",
           mode: "gauge+number",
@@ -91,10 +100,10 @@ async function initializePlots(heartRateMeasurement) {
         //  dataContainer.innerHTML += `<div id="${cardString}"></div>
         //<div id="${divString}"></div>`
         Plotly.plot(cardString, dataCard, config)
-          .then(Plotly.plot(divString, [data],  config).then(function() {
+          .then(Plotly.plot(divString, [data], config).then(function() {
             window.requestAnimationFrame(function() {
               window.requestAnimationFrame(function() {
-            //    window.alert('Your plot is done.');
+                //    window.alert('Your plot is done.');
               });
             });
           }));
@@ -172,7 +181,7 @@ async function initializePlots(heartRateMeasurement) {
 // }
 function addList() {
   var i;
-
+  $('#badges').removeClass('d-none');
   $('#button_container').hide();
 
 
