@@ -1,9 +1,12 @@
 var canvas = document.querySelector('canvas');
 var statusText = document.querySelector('#statusText');
 var myTab = document.getElementById("myTab");
+var recordButton=document.getElementById("recordButton");
 var dataContainer = document.getElementById("dataContainer");
 var internetConnected = document.getElementById("internetConnected");
 var badges= document.getElementById("badges");
+var oldRecordState=0;
+var newRecordState=0;
 
 var variableNames = ["Pressure 1", "Pressure 2", "Pressure 3", "Pressure 4", "Pressure 5", "PID 1", "PID 2", "PID 3", "Flow 1", "Flow 2", "Temperature", "Humidity"]
 statusText.addEventListener('click', function() {
@@ -27,12 +30,29 @@ statusText.addEventListener('click', function() {
 });
 
 async function initializePlots(heartRateMeasurement) {
+if(recordButton.checked)
+{newRecordState=1;}
+else {
+  newRecordState=0;
+}
   if (heartRateMeasurement.particleConfig[0]) {
-$('#internetConnected').removeClass('badge-dark');
-  $('#internetConnected').toggleClass('badge-success');
+  $('#internetConnected').removeClass('badge-danger');
+  $('#internetConnected').addClass('badge-success');
   } else {
-    $('#internetConnected').removeClass('badge-dark');
-  $('#internetConnected').toggleClass('badge-danger');
+  $('#internetConnected').removeClass('badge-success');
+  $('#internetConnected').addClass('badge-danger');
+  }
+if (newRecordState!==oldRecordState || newRecordState !== heartRateMeasurement.particleConfig[1])
+{
+  heartRateSensor.recordToggle(newRecordState);
+  oldRecordState=newRecordState;
+}
+  if (heartRateMeasurement.particleConfig[1]) {
+ $('#recordingIndicator').removeClass('badge-danger');
+  $('#recordingIndicator').addClass('badge-success');
+  } else {
+  $('#recordingIndicator').removeClass('badge-success');
+  $('#recordingIndicator').addClass('badge-danger');
   }
   var time = new Date();
   var i;
@@ -183,6 +203,8 @@ function addList() {
   var i;
   $('#badges').removeClass('d-none');
   $('#button_container').hide();
+  $('#internetConnected').removeClass('badge-dark');
+  $('#recordingIndicator').removeClass('badge-dark');
 
 
   //var option = document.createElement("option");
@@ -198,11 +220,14 @@ function addList() {
   //handleHeartRateMeasurement();
 }
 
+
 function handleHeartRateMeasurement(heartRateMeasurement) {
   const once = {
     once: true
   };
+
   heartRateMeasurement.addEventListener('characteristicvaluechanged', event => {
+
     var heartRateMeasurement = heartRateSensor.parseHeartRate(event.target.value);
     initializePlots(heartRateMeasurement)
       .then(heartRateMeasurement => plotData(heartRateMeasurement));
