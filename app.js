@@ -64,8 +64,8 @@ if (newRecordState!==oldRecordState || newRecordState !== heartRateMeasurement.p
 
       var cardElement = document.getElementById(cardString);
       var divElement = document.getElementById(divString);
-      var olderTime = time.setMinutes(time.getMinutes() - 1);
-      var futureTime = time.setMinutes(time.getMinutes() + 1);
+      var olderTime = time.setMinutes(time.getMinutes() - 5);
+      var futureTime = time.setMinutes(time.getMinutes() + 5);
 
 
       if (cardElement == null) {
@@ -251,8 +251,8 @@ function plotData(heartRateMeasurement) {
 
       var cardElement = document.getElementById(cardString);
       var divElement = document.getElementById(divString);
-      var olderTime = time.setMinutes(time.getMinutes() - 1);
-      var futureTime = time.setMinutes(time.getMinutes() + 1);
+      var olderTime = time.setMinutes(time.getMinutes() - 5);
+      var futureTime = time.setMinutes(time.getMinutes() + 5);
 
       var minuteView = {
         xaxis: {

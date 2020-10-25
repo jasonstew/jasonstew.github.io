@@ -56,10 +56,9 @@
     //     }
     //  });
     // }
-    recordToggle(newRecordState)
-    {
+    recordToggle(newRecordState) {
       const buffer = new Uint8Array(1);
-      buffer[0]=newRecordState;
+      buffer[0] = newRecordState;
       return this.options[0].writeValue(buffer);
     }
     startNotificationsHeartRateMeasurement() {
@@ -74,24 +73,26 @@
     }
     parseHeartRate(value) {
       // In Chrome 50+, a DataView is returned instead of an ArrayBuffer.
-     value = value.buffer ? value : new DataView(value);
+      value = value.buffer ? value : new DataView(value);
 
 
       let result = {};
-     result.particleConfig=[];
-      result.particleConfig[0]=value.getUint8(0, true);
-      result.particleConfig[1]=value.getUint8(1, true);
-    //  result.particleConfig=result.particleConfig.toString(2);
+      result.particleConfig = [];
+      result.particleConfig[0] = value.getUint8(0, true);
+      result.particleConfig[1] = value.getUint8(1, true);
+      //  result.particleConfig=result.particleConfig.toString(2);
       result.sensorConfig = value.getUint16(2, true);
       result.sensorConfig = result.sensorConfig.toString(2);
       result.SensorVal = [];
 
       // if (rate16Bits) {
       var i;
+      var j=0;
       for (i = 1; i <= result.sensorConfig.length; i++) {
-
-        result.SensorVal[11- result.sensorConfig.length+i] = value.getUint16(2 * i+2, true) / 100;
-
+        if (result.sensorConfig[i-1] == 1) {
+          result.SensorVal[11 - result.sensorConfig.length + i] = value.getFloat32(4 * j + 4, true);
+          j++;
+        }
       }
 
       return result;
