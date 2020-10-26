@@ -1,12 +1,19 @@
 var canvas = document.querySelector('canvas');
 var statusText = document.querySelector('#statusText');
 var myTab = document.getElementById("myTab");
-var recordButton=document.getElementById("recordButton");
+var recordButton = document.getElementById("recordButton");
+var zeroButton = document.getElementById("zeroButton");
+var spanButton = document.getElementById("spanButton");
 var dataContainer = document.getElementById("dataContainer");
 var internetConnected = document.getElementById("internetConnected");
-var badges= document.getElementById("badges");
-var oldRecordState=0;
-var newRecordState=0;
+var badges = document.getElementById("badges");
+var oldRecordState = 0;
+var newRecordState = 0;
+var oldZeroState = 0;
+var newZeroState = 0;
+var oldSpanState = 0;
+var newSpanState = 0;
+
 
 var variableNames = ["Pressure 1", "Pressure 2", "Pressure 3", "Pressure 4", "Pressure 5", "PID 1", "PID 2", "PID 3", "Flow 1", "Flow 2", "Temperature", "Humidity"]
 statusText.addEventListener('click', function() {
@@ -30,30 +37,69 @@ statusText.addEventListener('click', function() {
 });
 
 async function initializePlots(heartRateMeasurement) {
-if(recordButton.checked)
-{newRecordState=1;}
-else {
-  newRecordState=0;
-}
+  if (recordButton.checked) {
+    newRecordState = 1;
+  } else {
+    newRecordState = 0;
+  }
+
+  if (zeroButton.checked) {
+    newZeroState = 1;
+  } else {
+    newZeroState = 0;
+  }
+
+  if (spanButton.checked) {
+    newSpanState = 1;
+  } else {
+    newSpanState = 0;
+  }
   if (heartRateMeasurement.particleConfig[0]) {
-  $('#internetConnected').removeClass('badge-danger');
-  $('#internetConnected').addClass('badge-success');
+    $('#internetConnected').removeClass('badge-danger');
+    $('#internetConnected').addClass('badge-success');
   } else {
-  $('#internetConnected').removeClass('badge-success');
-  $('#internetConnected').addClass('badge-danger');
+    $('#internetConnected').removeClass('badge-success');
+    $('#internetConnected').addClass('badge-danger');
   }
-if (newRecordState!==oldRecordState || newRecordState !== heartRateMeasurement.particleConfig[1])
-{
-  heartRateSensor.recordToggle(newRecordState);
-  oldRecordState=newRecordState;
-}
+  if (heartRateMeasurement.particleConfig[2]) {
+    $('#calIndicator').removeClass('badge-danger');
+    $('#calIndicator').addClass('badge-success');
+  } else {
+    $('#calIndicator').removeClass('badge-success');
+    $('#calIndicator').addClass('badge-danger');
+  }
   if (heartRateMeasurement.particleConfig[1]) {
- $('#recordingIndicator').removeClass('badge-danger');
-  $('#recordingIndicator').addClass('badge-success');
+    $('#recordingIndicator').removeClass('badge-danger');
+    $('#recordingIndicator').addClass('badge-success');
   } else {
-  $('#recordingIndicator').removeClass('badge-success');
-  $('#recordingIndicator').addClass('badge-danger');
+    $('#recordingIndicator').removeClass('badge-success');
+    $('#recordingIndicator').addClass('badge-danger');
   }
+
+  if (newRecordState !== oldRecordState || newRecordState !== heartRateMeasurement.particleConfig[1]) {
+    heartRateSensor.recordToggle(newRecordState);
+    oldRecordState = newRecordState;
+  }
+
+
+  if (newZeroState==1 && newZeroState !== oldZeroState ) {
+      oldZeroState = newZeroState;
+      zeroButton.checked = false;
+      heartRateSensor.zeroToggle(newZeroState);
+
+  }
+
+  if (newSpanState==1 &&  newSpanState !== oldSpanState ) {
+      oldSpandState = newSpanState;
+      spanButton.checked = false;
+      heartRateSensor.spanToggle(newSpanState);
+
+  }
+
+
+
+
+
   var time = new Date();
   var i;
   for (i = 0; i < heartRateMeasurement.SensorVal.length; i++) {
@@ -205,7 +251,7 @@ function addList() {
   $('#button_container').hide();
   $('#internetConnected').removeClass('badge-dark');
   $('#recordingIndicator').removeClass('badge-dark');
-
+  $('#calIndicator').removeClass('badge-dark');
 
   //var option = document.createElement("option");
   //option.text=heartRateSensor.options[i].uuid;

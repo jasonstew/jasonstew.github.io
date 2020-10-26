@@ -61,15 +61,25 @@
       buffer[0] = newRecordState;
       return this.options[0].writeValue(buffer);
     }
+    zeroToggle(newzeroState) {
+      const buffer = new Uint8Array(1);
+      buffer[0] = newzeroState;
+      return this.options[1].writeValue(buffer);
+    }
+    spanToggle(newSpanState) {
+      const buffer = new Uint8Array(1);
+      buffer[0] = newSpanState;
+      return this.options[2].writeValue(buffer);
+    }
     startNotificationsHeartRateMeasurement() {
 
       //  return this._startNotifications(heartRateSensor.options[index].uuid);
 
-      return this.options[2].startNotifications();
+      return this.options[3].startNotifications();
     }
     stopNotificationsHeartRateMeasurement(index) {
       //  return this._stopNotifications(heartRateSensor.options[index].uuid);
-      return this.options[2].stopNotifications();
+      return this.options[3].stopNotifications();
     }
     parseHeartRate(value) {
       // In Chrome 50+, a DataView is returned instead of an ArrayBuffer.
@@ -80,8 +90,9 @@
       result.particleConfig = [];
       result.particleConfig[0] = value.getUint8(0, true);
       result.particleConfig[1] = value.getUint8(1, true);
+      result.particleConfig[2] = value.getUint8(2, true);
       //  result.particleConfig=result.particleConfig.toString(2);
-      result.sensorConfig = value.getUint16(2, true);
+      result.sensorConfig = value.getUint16(3, true);
       result.sensorConfig = result.sensorConfig.toString(2);
       result.SensorVal = [];
 
@@ -90,7 +101,7 @@
       var j=0;
       for (i = 1; i <= result.sensorConfig.length; i++) {
         if (result.sensorConfig[i-1] == 1) {
-          result.SensorVal[11 - result.sensorConfig.length + i] = value.getFloat32(4 * j + 4, true);
+          result.SensorVal[11 - result.sensorConfig.length + i] = value.getFloat32(4 * j + 5, true);
           j++;
         }
       }
