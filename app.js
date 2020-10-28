@@ -136,6 +136,7 @@ async function initializePlots(heartRateMeasurement) {
             y: [0, 1]
           },
           value: 450,
+          number:{ valueformat: ".3f"},
           title: {
             text: variableNames[i]
           },
